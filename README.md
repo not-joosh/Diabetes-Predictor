@@ -207,6 +207,109 @@ print(Y)
   Name: Outcome, Length: 768, dtype: int64
 ```
 
+---
+
+##### Train Test Split
+```python
+# X is the data,Y is the label.
+# Test Size is 0.2, 20% of data test data. The 80% is used as training Data.
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = 0.2, stratify = Y, random_state = 2)
+print(X.shape, X_train.shape, X_test.shape)
+```
+**OUTPUT:**
+*(768, 8) (614, 8) (154, 8)*
+
+##### Training the Machine Model
+```python
+# Trainig the Model
+classifier = svm.SVC(kernel='linear')
+classifier.fit(X_train, Y_train)
+```
+---
+
+###### Model Evaluation
+```python
+# Accuracy Score
+# accuracy score on the training data
+X_trainPrediction = classifier.predict(X_train)
+trainingDataAccuracy = accuracy_score(X_trainPrediction, Y_train) # Comparing X_train to Y_train
+print('Accuracy score: ', trainingDataAccuracy * 100, '%')
+```
+**OUTPUT:**
+Accuracy score:  78.66449511400651 %
+```python
+X_testPrediction = classifier.predict(X_test)
+testDataAccuracy = accuracy_score(X_testPrediction, Y_test)
+print('Accuracy score: ', testDataAccuracy * 100, '%')
+```
+**OUTPUT:**
+Accuracy score:  77.27272727272727 %
+
+---
+
+###### Making Predictive System
+```python
+# Expected is Diabetic: 1
+# 5,166,72,19,175,25.8,0.587,51 | 1
+input_data = (5,166,72,19,175,25.8,0.587,51)
+
+# Changing input data into numpy array.
+input_data_as_numpy_arr = np.asarray(input_data)
+
+# reshape the array as w are predicting for one instance
+# rsehape will tell the model that we are going to need prediction
+# for only one data point
+input_data_reshape = input_data_as_numpy_arr.reshape(1, -1) # we are not giving 786 examples, just 1 example
+
+# in training, we standardizedd the data, o we must do the same here.
+# We will continue here to standardize the data.
+std_data = scaler.transform(input_data_reshape)
+print(std_data)
+
+prediction = classifier.predict(std_data)
+print(prediction)
+if(prediction[0] == 0):
+  print('The person is not diabetic.')
+else:
+  print('The person is diabetic.')
+```
+**OUTPUT:**
+```cpp
+  [[ 0.3429808   1.41167241  0.14964075 -0.09637905  0.82661621 -0.78595734
+     0.34768723  1.51108316]]
+  [1]
+  The person is diabetic.
+  /usr/local/lib/python3.10/dist-packages/sklearn/base.py:439: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+    warnings.warn(
+```
+---
+### SUMMARY
+In this analysis, we performed a detailed examination of the PIMA Diabetes Dataset using machine learning techniques. The dataset contains information about various health attributes of individuals, including pregnancies, glucose levels, blood pressure, skin thickness, insulin levels, BMI, diabetes pedigree function, and age.
+
+We began by importing the necessary Python libraries, including `numpy`, `pandas`, `StandardScaler` from `sklearn.preprocessing`, `train_test_split` from `sklearn.model_selection`, `svm` from `sklearn`, and `accuracy_score` from `sklearn.metrics`.
+
+After importing the dependencies, we loaded the dataset into a pandas DataFrame and displayed the first few rows to gain a preliminary understanding of the data's structure. The dataset consists of 768 rows and 9 columns, including the target variable "Outcome," which indicates whether an individual is diabetic (1) or not (0).
+
+Next, we performed descriptive statistics on the dataset to gain insights into its central tendencies, dispersions, and distribution. This allowed us to understand the range and variability of the attributes.
+
+We further analyzed the dataset by grouping and calculating the mean of various attributes based on the "Outcome" label. This comparison provided us with initial insights into how different attributes might relate to diabetes outcomes.
+
+To prepare the data for training a machine learning model, we separated the features (X) from the target variable (Y) and standardized the feature values using `StandardScaler`. This standardization helped in ensuring that the features were on a similar scale, which is important for many machine learning algorithms.
+
+We then split the dataset into training and testing sets using the `train_test_split` function. We trained a Support Vector Machine (SVM) classifier with a linear kernel using the training data and evaluated its performance using accuracy scores on both the training and testing datasets. The SVM model achieved an accuracy of approximately 78.66% on the training data and 77.27% on the testing data.
+
+Finally, we demonstrated the model's predictive capabilities by inputting sample health attribute values and using the trained SVM classifier to predict whether a person is diabetic or not.
+
+In conclusion, this analysis provides valuable insights into the relationships between health attributes and diabetes outcomes. The machine learning model's performance suggests that it can predict diabetes with a moderate level of accuracy. This work serves as a foundation for further exploration and improvements in predicting diabetes based on health attributes.
+
+---
+
+  
+
+
+
+
+
 
 
 
